@@ -7,14 +7,17 @@ if ! command -v gog &> /dev/null; then
   go install github.com/steipete/gogcli/cmd/gog@latest
 fi
 
-# Write gog credentials from Replit Secrets to disk
+# Configure gog: set keyring to file mode (no passphrase prompt on Linux)
 mkdir -p "$HOME/.config/gogcli"
+gog auth keyring file 2>/dev/null || true
+
+# Write gog credentials from Replit Secrets to disk
 if [ -n "$GOG_CREDENTIALS_JSON" ]; then
   echo "$GOG_CREDENTIALS_JSON" > "$HOME/.config/gogcli/credentials.json"
 fi
 if [ -n "$GOG_TOKEN_JSON" ]; then
   echo "$GOG_TOKEN_JSON" > /tmp/gog-token-import.json
-  gog auth tokens import /tmp/gog-token-import.json 2>/dev/null || true
+  GOG_KEYRING_PASSPHRASE="" gog auth tokens import /tmp/gog-token-import.json --force 2>/dev/null || true
   rm -f /tmp/gog-token-import.json
 fi
 
