@@ -24,5 +24,16 @@ if ! command -v openclaw &> /dev/null; then
   npm install -g openclaw
 fi
 
+# Clone/update clinker plugin
+CLINKER_DIR="$HOME/clinker"
+if [ ! -d "$CLINKER_DIR" ]; then
+  echo "Cloning clinker plugin..."
+  git clone git@github.com:car1os/clinker.git "$CLINKER_DIR"
+  cd "$CLINKER_DIR" && npm install && cd -
+elif [ -d "$CLINKER_DIR/.git" ]; then
+  echo "Updating clinker plugin..."
+  cd "$CLINKER_DIR" && git pull && npm install && cd -
+fi
+
 echo "Starting openclaw gateway..."
 openclaw gateway
