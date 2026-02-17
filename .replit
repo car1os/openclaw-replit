@@ -1,6 +1,33 @@
 run = "bash start.sh"
 entrypoint = "start.sh"
+modules = ["nodejs-22"]
 
 [env]
 PATH = "/home/runner/go/bin:${PATH}"
 XDG_CONFIG_HOME = "/home/runner/.config"
+
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash start.sh"
+
+[workflows.workflow.metadata]
+outputType = "console"

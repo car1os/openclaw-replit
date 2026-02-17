@@ -27,15 +27,20 @@ if ! command -v openclaw &> /dev/null; then
   npm install -g openclaw
 fi
 
-# Clone/update clinker plugin
+# Clone/update clinker plugin (uses HTTPS + token for private repo access)
 CLINKER_DIR="$HOME/clinker"
-if [ ! -d "$CLINKER_DIR" ]; then
-  echo "Cloning clinker plugin..."
-  git clone git@github.com:car1os/clinker.git "$CLINKER_DIR"
-  cd "$CLINKER_DIR" && npm install && cd -
-elif [ -d "$CLINKER_DIR/.git" ]; then
-  echo "Updating clinker plugin..."
-  cd "$CLINKER_DIR" && git pull && npm install && cd -
+if [ -z "$GITHUB_TOKEN" ]; then
+  echo "WARNING: GITHUB_TOKEN not set — skipping clinker plugin clone/update"
+else
+  CLINKER_REPO="https://${GITHUB_TOKEN}@github.com/car1os/clinker.git"
+  if [ ! -d "$CLINKER_DIR" ]; then
+    echo "Cloning clinker plugin..."
+    git clone "$CLINKER_REPO" "$CLINKER_DIR"
+    cd "$CLINKER_DIR" && npm install && cd -
+  elif [ -d "$CLINKER_DIR/.git" ]; then
+    echo "Updating clinker plugin..."
+    cd "$CLINKER_DIR" && git remote set-url origin "$CLINKER_REPO" && git pull && npm install && cd -
+  fi
 fi
 
 echo "Starting openclaw gateway..."
