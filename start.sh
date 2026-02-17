@@ -4,7 +4,7 @@ set -e
 # Install gog if not present
 if ! command -v gog &> /dev/null; then
   echo "Installing gog CLI..."
-  go install github.com/steipete/gogcli@latest
+  go install github.com/steipete/gogcli/cmd/gog@latest
 fi
 
 # Write gog credentials from Replit Secrets to disk
