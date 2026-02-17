@@ -1,0 +1,6 @@
+run = "bash start.sh"
+entrypoint = "start.sh"
+
+[env]
+PATH = "/home/runner/go/bin:${PATH}"
+XDG_CONFIG_HOME = "/home/runner/.config"
