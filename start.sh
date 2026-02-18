@@ -53,14 +53,6 @@ GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-daec2103cb1db4ff124b7e52da11939aa0d2933
 
 cat > "$OPENCLAW_CONFIG" << EOFCONFIG
 {
-  "auth": {
-    "profiles": {
-      "anthropic:default": {
-        "provider": "anthropic",
-        "mode": "api-key"
-      }
-    }
-  },
   "agents": {
     "defaults": {
       "model": {
