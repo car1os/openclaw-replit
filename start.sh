@@ -43,5 +43,77 @@ else
   fi
 fi
 
+# Write openclaw.json config from environment
+OPENCLAW_DIR="$HOME/.openclaw"
+OPENCLAW_CONFIG="$OPENCLAW_DIR/openclaw.json"
+mkdir -p "$OPENCLAW_DIR"
+
+GATEWAY_PORT="${PORT:-18789}"
+GATEWAY_TOKEN="${OPENCLAW_GATEWAY_TOKEN:-daec2103cb1db4ff124b7e52da11939aa0d293358dcde926}"
+
+cat > "$OPENCLAW_CONFIG" << EOFCONFIG
+{
+  "auth": {
+    "profiles": {
+      "anthropic:default": {
+        "provider": "anthropic",
+        "mode": "api-key"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-sonnet-4-5-20250929"
+      },
+      "workspace": "$OPENCLAW_DIR/workspace",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "channels": {
+    "linq": {
+      "enabled": true,
+      "tokenEnv": "LINQ_API_TOKEN",
+      "baseUrl": "https://api.linqapp.com/api/partner/v3",
+      "webhookPath": "/webhook",
+      "dmPolicy": "allowlist",
+      "allowFrom": ["+14152384893"],
+      "botNumbers": ["+14043895460"]
+    }
+  },
+  "gateway": {
+    "port": $GATEWAY_PORT,
+    "mode": "local",
+    "bind": "lan",
+    "auth": {
+      "mode": "token",
+      "token": "$GATEWAY_TOKEN"
+    }
+  },
+  "plugins": {
+    "load": {
+      "paths": ["$CLINKER_DIR"]
+    },
+    "entries": {
+      "clinker": {
+        "enabled": true
+      }
+    }
+  }
+}
+EOFCONFIG
+
+echo "Wrote openclaw config to $OPENCLAW_CONFIG"
+echo "Gateway will listen on port $GATEWAY_PORT (bind=lan)"
+
 echo "Starting openclaw gateway..."
-openclaw gateway
+openclaw gateway --port "$GATEWAY_PORT" --bind lan
