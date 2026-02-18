@@ -89,7 +89,8 @@ cat > "$OPENCLAW_CONFIG" << EOFCONFIG
     "auth": {
       "mode": "token",
       "token": "$GATEWAY_TOKEN"
-    }
+    },
+    "trustedProxies": ["10.0.0.0/8", "172.16.0.0/12"]
   },
   "plugins": {
     "load": {
